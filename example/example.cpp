@@ -1,6 +1,7 @@
 
 #include <stdlib.h>
 #include <string>
+#include <sys/types.h>
 
 // include the sql parser
 #include "SQLParser.h"

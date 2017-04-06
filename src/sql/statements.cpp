@@ -290,4 +290,14 @@ namespace hsql {
     delete condition;
   }
 
+  // ShowStatement
+  ShowStatement::ShowStatement(EntityType type) :
+          SQLStatement(kStmtShow),
+          type(type),
+          tableName(NULL) {}
+
+  ShowStatement::~ShowStatement() {
+    free(tableName);
+  }
+
 } // namespace hsql

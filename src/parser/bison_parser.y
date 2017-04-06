@@ -114,6 +114,7 @@ int yyerror(YYLTYPE* llocp, SQLParserResult** result, yyscan_t scanner, const ch
 	hsql::DropStatement*   	drop_stmt;
 	hsql::PrepareStatement* prep_stmt;
 	hsql::ExecuteStatement* exec_stmt;
+	hsql::ShowStatement*    show_stmt;
 
 	hsql::TableRef* table;
 	hsql::Expr* expr;
@@ -136,7 +137,7 @@ int yyerror(YYLTYPE* llocp, SQLParserResult** result, yyscan_t scanner, const ch
 
 
 /*********************************
- ** Descrutor symbols
+ ** Destructor symbols
  *********************************/
 %destructor { } <fval> <ival> <uval> <bval> <order_type>
 %destructor { free( ($$) ); } <sval>
@@ -189,6 +190,7 @@ int yyerror(YYLTYPE* llocp, SQLParserResult** result, yyscan_t scanner, const ch
 %type <delete_stmt> delete_statement truncate_statement
 %type <update_stmt> update_statement
 %type <drop_stmt>	drop_statement
+%type <show_stmt>	show_statement
 %type <sval> 		table_name opt_alias alias file_path
 %type <bval> 		opt_not_exists opt_distinct
 %type <uval>		import_file_type opt_join_type column_type
@@ -272,6 +274,7 @@ preparable_statement:
 	|	truncate_statement { $$ = $1; }
 	|	update_statement { $$ = $1; }
 	|	drop_statement { $$ = $1; }
+	|   show_statement { $$ = $1; }
 	|	execute_statement { $$ = $1; }
 	;
 
@@ -395,6 +398,27 @@ drop_statement:
 			$$ = new DropStatement(DropStatement::kPreparedStatement);
 			$$->name = $3;
 		}
+	;
+
+/******************************
+ * Show Statement
+ * SHOW TABLES students;
+ * DEALLOCATE PREPARE stmt;
+ ******************************/
+
+show_statement:
+        SHOW TABLES {
+            $$ = new ShowStatement(ShowStatement::kTables);
+        }
+    |   SHOW COLUMNS FROM table_name {
+            $$ = new ShowStatement(ShowStatement::kColumns);
+            $$->tableName = $4;
+        }
+    |
+        SHOW INDEX FROM table_name {
+            $$ = new ShowStatement(ShowStatement::kIndex);
+            $$->tableName = $4;
+        }
 	;
 
 /******************************
