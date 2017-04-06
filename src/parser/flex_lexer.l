@@ -196,7 +196,7 @@ TO			TOKEN(TO)
 	return SQL_IDENTIFIER;
 }
 
-[A-Za-z][A-Za-z0-9_]* {
+[A-Za-z0-9_$]* {
 	yylval->sval = strdup(yytext);
 	return SQL_IDENTIFIER;
 }
