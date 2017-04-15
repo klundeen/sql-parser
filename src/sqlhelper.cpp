@@ -200,6 +200,8 @@ namespace hsql {
     case kStmtImport:
       printImportStatementInfo((const ImportStatement*) stmt, 0);
       break;
+    case kStmtShow:
+      inprint("SHOW",0);
     default:
       break;
     }

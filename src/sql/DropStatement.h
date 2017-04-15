@@ -21,6 +21,7 @@ namespace hsql {
 
     EntityType type;
     char* name;
+    char* indexName;
   };
 
 } // namespace hsql
