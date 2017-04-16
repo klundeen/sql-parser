@@ -42,6 +42,7 @@ namespace hsql {
     char* filePath; // default: NULL
     char* tableName; // default: NULL
     char* indexName; // default: NULL
+    char* indexType; // default: NULL
     std::vector<ColumnDefinition*>* columns; // default: NULL
     std::vector<char*>* viewColumns;
     std::vector<char*>* indexColumns;

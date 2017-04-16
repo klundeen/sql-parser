@@ -31,11 +31,14 @@ namespace hsql {
     tableName(NULL),
     columns(NULL),
     viewColumns(NULL),
+    indexName(NULL),
+    indexType(NULL),
     select(NULL) {};
 
   CreateStatement::~CreateStatement() {
     free(filePath);
     free(tableName);
+    free(indexName);
     delete select;
 
     if (columns != NULL) {

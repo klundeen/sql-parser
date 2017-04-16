@@ -101,6 +101,7 @@ int yyerror(YYLTYPE* llocp, SQLParserResult** result, yyscan_t scanner, const ch
 	double fval;
 	int64_t ival;
 	char* sval;
+	char* ssval;
 	uintmax_t uval;
 	bool bval;
 
@@ -139,7 +140,7 @@ int yyerror(YYLTYPE* llocp, SQLParserResult** result, yyscan_t scanner, const ch
 /*********************************
  ** Destructor symbols
  *********************************/
-%destructor { } <fval> <ival> <uval> <bval> <order_type>
+%destructor { } <fval> <ival> <uval> <bval> <order_type> <ssval>
 %destructor { free( ($$) ); } <sval>
 %destructor {
 	if (($$) != NULL) {
@@ -168,7 +169,7 @@ int yyerror(YYLTYPE* llocp, SQLParserResult** result, yyscan_t scanner, const ch
 %token SPATIAL VIRTUAL BEFORE COLUMN CREATE DELETE DIRECT
 %token DOUBLE ESCAPE EXCEPT EXISTS GLOBAL HAVING IMPORT
 %token INSERT ISNULL OFFSET RENAME SCHEMA SELECT SORTED
-%token TABLES UNIQUE UNLOAD UPDATE VALUES AFTER ALTER CROSS
+%token TABLES UNIQUE UNLOAD UPDATE VALUES AFTER ALTER BTREE CROSS
 %token DELTA GROUP INDEX INNER LIMIT LOCAL MERGE MINUS ORDER
 %token OUTER RIGHT TABLE UNION USING WHERE CALL CASE DATE
 %token DESC DROP ELSE FILE FROM FULL HASH HINT INTO JOIN
@@ -192,6 +193,7 @@ int yyerror(YYLTYPE* llocp, SQLParserResult** result, yyscan_t scanner, const ch
 %type <drop_stmt>	drop_statement
 %type <show_stmt>	show_statement
 %type <sval> 		table_name opt_alias alias file_path index_name
+%type <ssval>       opt_using_type
 %type <bval> 		opt_not_exists opt_distinct
 %type <uval>		import_file_type opt_join_type column_type
 %type <table> 		from_clause table_ref table_ref_atomic table_ref_name
@@ -353,13 +355,19 @@ create_statement:
 			$$->viewColumns = $5;
 			$$->select = $7;
 		}
-	|   CREATE INDEX index_name ON table_name column_list {
+	|   CREATE INDEX index_name ON table_name opt_using_type column_list {
 	        $$ = new CreateStatement(CreateStatement::kIndex);
 	        $$->indexName = $3;
 	        $$->tableName = $5;
-	        $$->indexColumns = $6;
+	        $$->indexType = $6;
+	        $$->indexColumns = $7;
 	    }
 	;
+
+opt_using_type:
+        USING BTREE { $$ = "BTREE"; }
+    |   USING HASH { $$ = "HASH"; }
+    |   /* empty */ { $$ = "BTREE"; }
 
 opt_not_exists:
 		IF NOT EXISTS { $$ = true; }
