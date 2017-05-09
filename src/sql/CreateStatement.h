@@ -9,6 +9,10 @@ namespace hsql {
 
   // Represents definition of a table column
   struct ColumnDefinition {
+    enum DefinitonType {
+        kColumn,
+        kPrimaryKey
+    };
     enum DataType {
       UNKNOWN,
       TEXT,
@@ -17,10 +21,13 @@ namespace hsql {
     };
 
     ColumnDefinition(char* name, DataType type);
+    ColumnDefinition();
     virtual ~ColumnDefinition();
 
+    DefinitonType definitionType;
     char* name;
     DataType type;
+    std::vector<char*>* primaryKeyColumns;
   };
 
 

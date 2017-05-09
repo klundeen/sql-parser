@@ -15,11 +15,19 @@ namespace hsql {
 
   // ColumnDefinition
   ColumnDefinition::ColumnDefinition(char* name, DataType type) :
+    definitionType(kColumn),
     name(name),
-    type(type) {};
+    type(type),
+    primaryKeyColumns(NULL) {};
+
+  ColumnDefinition::ColumnDefinition() :
+    definitionType(kPrimaryKey),
+    name(NULL),
+    primaryKeyColumns(NULL) {};
 
   ColumnDefinition::~ColumnDefinition() {
     free(name);
+    delete primaryKeyColumns;
   }
 
   // CreateStatemnet

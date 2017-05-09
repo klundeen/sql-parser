@@ -380,7 +380,11 @@ column_def_commalist:
 	;
 
 column_def:
-		IDENTIFIER column_type {
+	    PRIMARY KEY '(' ident_commalist ')' {
+	        $$ = new ColumnDefinition();
+	        $$->primaryKeyColumns = $4;
+	    }
+	|	IDENTIFIER column_type {
 			$$ = new ColumnDefinition($1, (ColumnDefinition::DataType) $2);
 		}
 	;
