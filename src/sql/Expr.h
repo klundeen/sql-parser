@@ -21,7 +21,8 @@ namespace hsql {
     kExprColumnRef,
     kExprFunctionRef,
     kExprOperator,
-    kExprSelect
+    kExprSelect,
+    kExprUsing
   };
 
   typedef struct Expr Expr;
@@ -84,6 +85,7 @@ namespace hsql {
     OperatorType opType;
     char opChar;
     bool distinct;
+    std::vector<char*>* usingList;
 
 
     // Convenience accessor methods.

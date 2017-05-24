@@ -14,7 +14,8 @@ namespace hsql {
     select(NULL),
     name(NULL),
     table(NULL),
-    alias(NULL) {};
+    alias(NULL),
+    usingList(NULL) {};
 
   Expr::~Expr() {
     delete expr;
@@ -23,6 +24,7 @@ namespace hsql {
     free(name);
     free(table);
     free(alias);
+    delete usingList;
 
     if (exprList != NULL) {
       for (Expr* e : *exprList) {

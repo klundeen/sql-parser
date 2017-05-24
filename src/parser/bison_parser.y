@@ -867,14 +867,14 @@ index_name:
  ******************************/
 
 join_clause:
-		join_table opt_join_type JOIN join_table ON join_condition
+		table_ref_atomic opt_join_type JOIN join_table join_condition
 		{ 
 			$$ = new TableRef(kTableJoin);
 			$$->join = new JoinDefinition();
 			$$->join->type = (JoinType) $2;
 			$$->join->left = $1;
 			$$->join->right = $4;
-			$$->join->condition = $6;
+			$$->join->condition = $5;
 		}
 		;
 
@@ -903,7 +903,15 @@ join_table:
 
 
 join_condition:
-		expr
+		ON expr
+		{
+		    $$ = $2;
+		}
+	|   USING '(' ident_commalist ')'
+	    {
+	        $$ = new Expr(kExprUsing);
+	        $$->usingList = $3;
+	    }
 		;
 
 
